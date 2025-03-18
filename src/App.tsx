@@ -1,9 +1,9 @@
+"use client"
 
 import type React from "react"
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Play, Pause, SkipForward, SkipBack, Flag, Upload, AlertCircle, Wand2, ChevronDown } from "lucide-react"
-import './index.css'
 
 export default function VerticalJumpAnalyzer() {
   const [videoSrc, setVideoSrc] = useState<string>("")
@@ -20,9 +20,9 @@ export default function VerticalJumpAnalyzer() {
   const [analyzing, setAnalyzing] = useState(false)
   const [analysisProgress, setAnalysisProgress] = useState(0)
   const [_, setMotionData] = useState<number[]>([])
-  const [activeTab, setActiveTab] = useState<"video" | "results">("video")
   const [showUnitDropdown, setShowUnitDropdown] = useState(false)
   const [showFpsDropdown, setShowFpsDropdown] = useState(false)
+  const [activeTab, setActiveTab] = useState<"video" | "results">("video")
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -42,14 +42,14 @@ export default function VerticalJumpAnalyzer() {
   }
 
   // Load example video
-  const loadExampleVideo = () => {
-    setLoading(true)
-    setError(null)
-    resetAnalysis()
+  // const loadExampleVideo = () => {
+  //   setLoading(true)
+  //   setError(null)
+  //   resetAnalysis()
 
-    // Usar el video proporcionado
-    setVideoSrc("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/example-Q6C84HqMno1pdtnIiK9Jk9c5W83DPf.mp4")
-  }
+  //   // Usar el video proporcionado
+  //   setVideoSrc("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/example-Q6C84HqMno1pdtnIiK9Jk9c5W83DPf.mp4")
+  // }
 
   // Reset analysis data
   const resetAnalysis = () => {
@@ -179,7 +179,7 @@ export default function VerticalJumpAnalyzer() {
       ]
 
       // Datos para el análisis
-      const frameSamples = 60 // Mayor número de frames para mejor precisión
+      const frameSamples =  60 // Mayor número de frames para mejor precisión
       const frameInterval = 1 / frameSamples
       const motionDataArray: number[] = []
 
@@ -262,9 +262,12 @@ export default function VerticalJumpAnalyzer() {
         // en el primer tercio del video, así que filtramos los picos relevantes
         const relevantPeaks = peaks.filter((p) => p.index > totalFrames * 0.1 && p.index < totalFrames * 0.7)
 
+        console.log("Picos detectados:", peaks)
         if (relevantPeaks.length >= 2) {
+
           // El primer pico relevante es el despegue
           const takeoffFrame = relevantPeaks[0].index
+
           // El segundo pico relevante es el aterrizaje
           const landingFrame = relevantPeaks[1].index
 
@@ -304,7 +307,7 @@ export default function VerticalJumpAnalyzer() {
         setTimeout(() => {
           calculateJumpHeight()
           // Cambiar a la pestaña de resultados automáticamente
-          setActiveTab("results")
+          //setActiveTab("results")
         }, 500)
       }
     } catch (err) {
@@ -487,369 +490,375 @@ export default function VerticalJumpAnalyzer() {
   const performanceCategory = getPerformanceCategory()
 
   return (
-    <div className="flex flex-col w-full max-w-md mx-auto">
-      {/* Navegación de pestañas estilo móvil */}
-      <div className="flex w-full mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg overflow-hidden">
-        <button
-          className={`flex-1 py-3 text-center font-medium ${activeTab === "video" ? "bg-blue-500 text-white" : "bg-transparent text-gray-600 dark:text-gray-300"
-            }`}
-          onClick={() => setActiveTab("video")}
-        >
-          Video
-        </button>
-        <button
-          className={`flex-1 py-3 text-center font-medium ${activeTab === "results" ? "bg-blue-500 text-white" : "bg-transparent text-gray-600 dark:text-gray-300"
-            }`}
-          onClick={() => setActiveTab("results")}
-        >
-          Resultados
-        </button>
-      </div>
-
-      {/* Contenido de la pestaña de video */}
-      <AnimatePresence mode="wait">
-        {activeTab === "video" && (
-          <motion.div
-            key="video-tab"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-            className="w-full"
+    <main className="container mx-auto px-4 py-8 min-h-screen bg-gray-50 dark:bg-gray-950">
+      <h1 className="text-4xl font-bold text-center mb-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        Analizador de Salto Vertical
+      </h1>
+      <div className="flex flex-col w-full max-w-md mx-auto">
+        {/* Navegación de pestañas estilo móvil */}
+        <div className="flex w-full mb-4 bg-gray-100  rounded-lg overflow-hidden">
+          <button
+            className={`flex-1 py-3 text-center font-medium ${activeTab === "video" ? "bg-blue-500 text-white" : "bg-transparent text-gray-600 dark:text-gray-300"
+              }`}
+            onClick={() => setActiveTab("video")}
           >
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
-              <div className="p-4">
-                <h2 className="text-xl font-bold text-center mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  Analizador de Salto Vertical
-                </h2>
+            Video
+          </button>
+          <button
+            className={`flex-1 py-3 text-center font-medium ${activeTab === "results" ? "bg-blue-500 text-white" : "bg-transparent text-gray-600 dark:text-gray-300"
+              }`}
+            onClick={() => setActiveTab("results")}
+          >
+            Resultados
+          </button>
+        </div>
 
-                <div className="flex flex-wrap gap-2 mb-4 justify-center">
-                  <button
-                    className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium flex items-center shadow-md"
-                    onClick={() => document.getElementById("video-upload")?.click()}
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Cargar Video
-                  </button>
-                  <input
-                    id="video-upload"
-                    type="file"
-                    accept="video/*"
-                    className="hidden"
-                    onChange={handleFileUpload}
-                  />
+        {/* Contenido de la pestaña de video */}
+        <AnimatePresence mode="wait">
+          {activeTab === "video" && (
+            <motion.div
+              key="video-tab"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+              className="w-full"
+            >
+              <div className="bg-white  rounded-xl shadow-xl overflow-hidden">
+                <div className="p-4">
+                  {/* <h2 className="text-xl font-bold text-center mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Analizador de Salto Vertical
+                  </h2> */}
 
-                  <button
-                    className="px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium flex items-center"
-                    onClick={loadExampleVideo}
-                  >
-                    Video de Ejemplo
-                  </button>
+                  <div className="flex flex-wrap gap-2 mb-4 justify-center">
+                    <button
+                      className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white font-medium flex items-center shadow-md"
+                      onClick={() => document.getElementById("video-upload")?.click()}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Cargar Video
+                    </button>
+                    <input
+                      id="video-upload"
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      onChange={handleFileUpload}
+                    />
+
+                    {/* <button
+                      className="px-4 py-2 rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium flex items-center"
+                      onClick={loadExampleVideo}
+                    >
+                      Video de Ejemplo
+                    </button> */}
+                  </div>
+
+                  {error && (
+                    <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4 text-red-700 dark:text-red-400 flex items-start">
+                      <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
+                      <div className="text-sm">{error}</div>
+                    </div>
+                  )}
+
+                  {loading ? (
+                    <div className="flex flex-col items-center justify-center h-64 text-gray-500 dark:text-gray-400">
+                      <div className="w-12 h-12 rounded-full border-4 border-t-blue-500 border-blue-200 dark:border-blue-800 animate-spin mb-4"></div>
+                      <p>Cargando video...</p>
+                    </div>
+                  ) : videoSrc ? (
+                    <div className="space-y-4">
+                      <div className="relative rounded-xl overflow-hidden bg-black">
+                        <video
+                          ref={videoRef}
+                          src={videoSrc}
+                          className="w-full h-auto"
+                          onClick={togglePlay}
+                          controls={false}
+                          playsInline
+                        />
+                        <canvas
+                          ref={canvasRef}
+                          className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none"
+                        />
+
+                        {takeoffTime !== null && (
+                          <div
+                            className="absolute left-0 w-1 h-full bg-green-500"
+                            style={{ left: `${(takeoffTime / duration) * 100}%` }}
+                          />
+                        )}
+
+                        {landingTime !== null && (
+                          <div
+                            className="absolute left-0 w-1 h-full bg-red-500"
+                            style={{ left: `${(landingTime / duration) * 100}%` }}
+                          />
+                        )}
+
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          {!isPlaying && (
+                            <div className="bg-black/50 rounded-full p-4 backdrop-blur-sm">
+                              <Play className="h-8 w-8 text-white" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <input
+                          ref={progressRef}
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={currentTime}
+                          onChange={handleSeek}
+                          className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
+                        />
+                        <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+                          <span>{formatTime(currentTime)}</span>
+                          <span>{formatTime(duration)}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-center gap-3 mb-4">
+                        <button
+                          className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
+                          onClick={() => skipTime(-0.1)}
+                        >
+                          <SkipBack className="h-5 w-5" />
+                        </button>
+                        <button
+                          className={`w-14 h-14 flex items-center justify-center rounded-full text-white ${isPlaying ? "bg-red-500" : "bg-blue-500"
+                            }`}
+                          onClick={togglePlay}
+                        >
+                          {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
+                        </button>
+                        <button
+                          className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
+                          onClick={() => skipTime(0.1)}
+                        >
+                          <SkipForward className="h-5 w-5" />
+                        </button>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2 justify-center mb-4">
+                        <button
+                          className={`px-4 py-2 rounded-full flex items-center text-sm font-medium ${takeoffTime !== null
+                              ? "bg-green-500 text-white"
+                              : "border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
+                            }`}
+                          onClick={markTakeoff}
+                        >
+                          <Flag className="h-4 w-4 mr-2" />
+                          Marcar Despegue
+                        </button>
+                        <button
+                          className={`px-4 py-2 rounded-full flex items-center text-sm font-medium ${landingTime !== null
+                              ? "bg-red-500 text-white"
+                              : "border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
+                            }`}
+                          onClick={markLanding}
+                        >
+                          <Flag className="h-4 w-4 mr-2" />
+                          Marcar Aterrizaje
+                        </button>
+                      </div>
+
+                      {analyzing ? (
+                        <div className="space-y-2 mb-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600 dark:text-gray-400">Analizando video...</span>
+                            <span className="text-sm font-medium">{analysisProgress}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div
+                              className="bg-blue-500 h-2 rounded-full transition-all duration-300 ease-in-out"
+                              style={{ width: `${analysisProgress}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-3 mb-4">
+                          <div className="flex justify-between items-center">
+                            <div className="relative" ref={fpsDropdownRef}>
+                              <button
+                                className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 flex items-center gap-2 text-sm"
+                                onClick={() => setShowFpsDropdown(!showFpsDropdown)}
+                              >
+                                <span>FPS: {fps}</span>
+                                <ChevronDown className="h-4 w-4" />
+                              </button>
+                              {showFpsDropdown && (
+                                <div className="absolute left-0 mt-1 w-24 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-10">
+                                  {[30, 60, 120, 240].map((value) => (
+                                    <button
+                                      key={value}
+                                      className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 first:rounded-t-lg last:rounded-b-lg"
+                                      onClick={() => {
+                                        setFps(value)
+                                        setShowFpsDropdown(false)
+                                      }}
+                                    >
+                                      {value}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <button
+                              className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium shadow-md disabled:opacity-50"
+                              onClick={() => {
+                                calculateJumpHeight()
+                                setActiveTab("results")
+                              }}
+                              disabled={takeoffTime === null || landingTime === null}
+                            >
+                              Calcular
+                            </button>
+                          </div>
+
+                          <button
+                            className="w-full py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md flex items-center justify-center"
+                            onClick={autoDetectJump}
+                            disabled={!videoSrc || analyzing}
+                          >
+                            <Wand2 className="h-5 w-5 mr-2" />
+                            Detección Automática
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl">
+                      <div className="w-20 h-20 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-4">
+                        <Upload className="h-8 w-8 text-blue-500" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Ningún video cargado</h3>
+                      <p className="text-gray-500 dark:text-gray-400 mt-1 text-center px-4">
+                        Carga un video o usa el ejemplo para comenzar el análisis
+                      </p>
+                    </div>
+                  )}
                 </div>
+              </div>
+            </motion.div>
+          )}
 
-                {error && (
-                  <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4 text-red-700 dark:text-red-400 flex items-start">
-                    <AlertCircle className="h-5 w-5 mr-2 flex-shrink-0" />
-                    <div className="text-sm">{error}</div>
+          {/* Contenido de la pestaña de resultados */}
+          {activeTab === "results" && (
+            <motion.div
+              key="results-tab"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="w-full"
+            >
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
+                <div className="p-4">
+                  <h2 className="text-xl font-bold text-center mb-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                    Análisis de Salto Vertical
+                  </h2>
+
+                  <div className="grid grid-cols-3 gap-3 mb-6">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-3 text-center">
+                      <p className="text-xs text-blue-500 dark:text-blue-400 font-medium">Despegue</p>
+                      <p className="text-lg font-bold mt-1 text-gray-900 dark:text-gray-100">
+                        {takeoffTime !== null ? formatTime(takeoffTime) : "—"}
+                      </p>
+                    </div>
+
+                    <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-3 text-center">
+                      <p className="text-xs text-red-500 dark:text-red-400 font-medium">Aterrizaje</p>
+                      <p className="text-lg font-bold mt-1 text-gray-900 dark:text-gray-100">
+                        {landingTime !== null ? formatTime(landingTime) : "—"}
+                      </p>
+                    </div>
+
+                    <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-3 text-center">
+                      <p className="text-xs text-purple-500 dark:text-purple-400 font-medium">Tiempo Aire</p>
+                      <p className="text-lg font-bold mt-1 text-gray-900 dark:text-gray-100">
+                        {takeoffTime !== null && landingTime !== null
+                          ? `${(landingTime - takeoffTime).toFixed(3)}s`
+                          : "—"}
+                      </p>
+                    </div>
                   </div>
-                )}
 
-                {loading ? (
-                  <div className="flex flex-col items-center justify-center h-64 text-gray-500 dark:text-gray-400">
-                    <div className="w-12 h-12 rounded-full border-4 border-t-blue-500 border-blue-200 dark:border-blue-800 animate-spin mb-4"></div>
-                    <p>Cargando video...</p>
-                  </div>
-                ) : videoSrc ? (
-                  <div className="space-y-4">
-                    <div className="relative rounded-xl overflow-hidden bg-black">
-                      <video
-                        ref={videoRef}
-                        src={videoSrc}
-                        className="w-full h-auto"
-                        onClick={togglePlay}
-                        controls={false}
-                        playsInline
-                      />
-                      <canvas
-                        ref={canvasRef}
-                        className="absolute top-0 left-0 w-full h-full opacity-0 pointer-events-none"
-                      />
-
-                      {takeoffTime !== null && (
-                        <div
-                          className="absolute left-0 w-1 h-full bg-green-500"
-                          style={{ left: `${(takeoffTime / duration) * 100}%` }}
-                        />
-                      )}
-
-                      {landingTime !== null && (
-                        <div
-                          className="absolute left-0 w-1 h-full bg-red-500"
-                          style={{ left: `${(landingTime / duration) * 100}%` }}
-                        />
-                      )}
-
-                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        {!isPlaying && (
-                          <div className="bg-black/50 rounded-full p-4 backdrop-blur-sm">
-                            <Play className="h-8 w-8 text-white" />
+                  <div className="border-t border-gray-100 dark:border-gray-800 pt-4 mb-6">
+                    <div className="flex justify-between items-center mb-2">
+                      <div className="relative" ref={unitDropdownRef}>
+                        <button
+                          className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 flex items-center gap-2 text-sm"
+                          onClick={() => setShowUnitDropdown(!showUnitDropdown)}
+                        >
+                          <span>{unit === "inches" ? "Pulgadas" : "Centímetros"}</span>
+                          <ChevronDown className="h-4 w-4" />
+                        </button>
+                        {showUnitDropdown && (
+                          <div className="absolute left-0 mt-1 w-36 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-10">
+                            <button
+                              className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 first:rounded-t-lg"
+                              onClick={() => {
+                                setUnit("inches")
+                                setShowUnitDropdown(false)
+                              }}
+                            >
+                              Pulgadas
+                            </button>
+                            <button
+                              className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 last:rounded-b-lg"
+                              onClick={() => {
+                                setUnit("cm")
+                                setShowUnitDropdown(false)
+                              }}
+                            >
+                              Centímetros
+                            </button>
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <input
-                        ref={progressRef}
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={currentTime}
-                        onChange={handleSeek}
-                        className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
-                      />
-                      <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
-                        <span>{formatTime(currentTime)}</span>
-                        <span>{formatTime(duration)}</span>
+                    <div className="text-center py-6">
+                      <div className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        {jumpHeight !== null ? `${jumpHeight.toFixed(1)}` : "0"}
+                      </div>
+                      <div className="text-xl font-medium text-gray-500 dark:text-gray-400 mt-1">
+                        {unit === "inches" ? "pulgadas" : "cm"}
                       </div>
                     </div>
 
-                    <div className="flex justify-center gap-3 mb-4">
-                      <button
-                        className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
-                        onClick={() => skipTime(-0.1)}
-                      >
-                        <SkipBack className="h-5 w-5" />
-                      </button>
-                      <button
-                        className={`w-14 h-14 flex items-center justify-center rounded-full text-white ${isPlaying ? "bg-red-500" : "bg-blue-500"
-                          }`}
-                        onClick={togglePlay}
-                      >
-                        {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6" />}
-                      </button>
-                      <button
-                        className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
-                        onClick={() => skipTime(0.1)}
-                      >
-                        <SkipForward className="h-5 w-5" />
-                      </button>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2 justify-center mb-4">
-                      <button
-                        className={`px-4 py-2 rounded-full flex items-center text-sm font-medium ${takeoffTime !== null
-                            ? "bg-green-500 text-white"
-                            : "border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
-                          }`}
-                        onClick={markTakeoff}
-                      >
-                        <Flag className="h-4 w-4 mr-2" />
-                        Marcar Despegue
-                      </button>
-                      <button
-                        className={`px-4 py-2 rounded-full flex items-center text-sm font-medium ${landingTime !== null
-                            ? "bg-red-500 text-white"
-                            : "border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300"
-                          }`}
-                        onClick={markLanding}
-                      >
-                        <Flag className="h-4 w-4 mr-2" />
-                        Marcar Aterrizaje
-                      </button>
-                    </div>
-
-                    {analyzing ? (
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-600 dark:text-gray-400">Analizando video...</span>
-                          <span className="text-sm font-medium">{analysisProgress}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                          <div
-                            className="bg-blue-500 h-2 rounded-full transition-all duration-300 ease-in-out"
-                            style={{ width: `${analysisProgress}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col gap-3 mb-4">
-                        <div className="flex justify-between items-center">
-                          <div className="relative" ref={fpsDropdownRef}>
-                            <button
-                              className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 flex items-center gap-2 text-sm"
-                              onClick={() => setShowFpsDropdown(!showFpsDropdown)}
-                            >
-                              <span>FPS: {fps}</span>
-                              <ChevronDown className="h-4 w-4" />
-                            </button>
-                            {showFpsDropdown && (
-                              <div className="absolute left-0 mt-1 w-24 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-10">
-                                {[30, 60, 120, 240].map((value) => (
-                                  <button
-                                    key={value}
-                                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 first:rounded-t-lg last:rounded-b-lg"
-                                    onClick={() => {
-                                      setFps(value)
-                                      setShowFpsDropdown(false)
-                                    }}
-                                  >
-                                    {value}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-
-                          <button
-                            className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium shadow-md disabled:opacity-50"
-                            onClick={() => {
-                              calculateJumpHeight()
-                              setActiveTab("results")
-                            }}
-                            disabled={takeoffTime === null || landingTime === null}
-                          >
-                            Calcular
-                          </button>
-                        </div>
-
-                        <button
-                          className="w-full py-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium shadow-md flex items-center justify-center"
-                          onClick={autoDetectJump}
-                          disabled={!videoSrc || analyzing}
-                        >
-                          <Wand2 className="h-5 w-5 mr-2" />
-                          Detección Automática
-                        </button>
+                    {jumpHeight !== null && performanceCategory && (
+                      <div className="text-center mb-4">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          Categoría:
+                          <span className={`font-bold ml-1 ${performanceCategory.color}`}>
+                            {performanceCategory.category}
+                          </span>
+                        </p>
                       </div>
                     )}
                   </div>
-                ) : (
-                  <div className="flex flex-col items-center justify-center py-12 border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-xl">
-                    <div className="w-20 h-20 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-4">
-                      <Upload className="h-8 w-8 text-blue-500" />
-                    </div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">Ningún video cargado</h3>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1 text-center px-4">
-                      Carga un video o usa el ejemplo para comenzar el análisis
+
+                  <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
+                    <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">¿Cómo funciona?</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      Esta aplicación utiliza principios de física para calcular la altura del salto vertical. Cuando
+                      saltas, el tiempo que pasas en el aire está directamente relacionado con la altura que alcanzas.
+                      Utilizamos la fórmula h = (g × t²)/8, donde g es la aceleración debido a la gravedad (9.81 m/s²) y t
+                      es el tiempo en el aire.
                     </p>
                   </div>
-                )}
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {/* Contenido de la pestaña de resultados */}
-        {activeTab === "results" && (
-          <motion.div
-            key="results-tab"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="w-full"
-          >
-            <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden">
-              <div className="p-4">
-                <h2 className="text-xl font-bold text-center mb-4 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                  Análisis de Salto Vertical
-                </h2>
-
-                <div className="grid grid-cols-3 gap-3 mb-6">
-                  <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-3 text-center">
-                    <p className="text-xs text-blue-500 dark:text-blue-400 font-medium">Despegue</p>
-                    <p className="text-lg font-bold mt-1 text-gray-900 dark:text-gray-100">
-                      {takeoffTime !== null ? formatTime(takeoffTime) : "—"}
-                    </p>
-                  </div>
-
-                  <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-3 text-center">
-                    <p className="text-xs text-red-500 dark:text-red-400 font-medium">Aterrizaje</p>
-                    <p className="text-lg font-bold mt-1 text-gray-900 dark:text-gray-100">
-                      {landingTime !== null ? formatTime(landingTime) : "—"}
-                    </p>
-                  </div>
-
-                  <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-3 text-center">
-                    <p className="text-xs text-purple-500 dark:text-purple-400 font-medium">Tiempo Aire</p>
-                    <p className="text-lg font-bold mt-1 text-gray-900 dark:text-gray-100">
-                      {takeoffTime !== null && landingTime !== null
-                        ? `${(landingTime - takeoffTime).toFixed(3)}s`
-                        : "—"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="border-t border-gray-100 dark:border-gray-800 pt-4 mb-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="relative" ref={unitDropdownRef}>
-                      <button
-                        className="px-3 py-2 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 flex items-center gap-2 text-sm"
-                        onClick={() => setShowUnitDropdown(!showUnitDropdown)}
-                      >
-                        <span>{unit === "inches" ? "Pulgadas" : "Centímetros"}</span>
-                        <ChevronDown className="h-4 w-4" />
-                      </button>
-                      {showUnitDropdown && (
-                        <div className="absolute left-0 mt-1 w-36 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-lg z-10">
-                          <button
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 first:rounded-t-lg"
-                            onClick={() => {
-                              setUnit("inches")
-                              setShowUnitDropdown(false)
-                            }}
-                          >
-                            Pulgadas
-                          </button>
-                          <button
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 last:rounded-b-lg"
-                            onClick={() => {
-                              setUnit("cm")
-                              setShowUnitDropdown(false)
-                            }}
-                          >
-                            Centímetros
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="text-center py-6">
-                    <div className="text-6xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                      {jumpHeight !== null ? `${jumpHeight.toFixed(1)}` : "0"}
-                    </div>
-                    <div className="text-xl font-medium text-gray-500 dark:text-gray-400 mt-1">
-                      {unit === "inches" ? "pulgadas" : "cm"}
-                    </div>
-                  </div>
-
-                  {jumpHeight !== null && performanceCategory && (
-                    <div className="text-center mb-4">
-                      <p className="text-sm text-gray-700 dark:text-gray-300">
-                        Categoría:
-                        <span className={`font-bold ml-1 ${performanceCategory.color}`}>
-                          {performanceCategory.category}
-                        </span>
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                <div className="border-t border-gray-100 dark:border-gray-800 pt-4">
-                  <h3 className="font-semibold mb-2 text-gray-900 dark:text-gray-100">¿Cómo funciona?</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Esta aplicación utiliza principios de física para calcular la altura del salto vertical. Cuando
-                    saltas, el tiempo que pasas en el aire está directamente relacionado con la altura que alcanzas.
-                    Utilizamos la fórmula h = (g × t²)/8, donde g es la aceleración debido a la gravedad (9.81 m/s²) y t
-                    es el tiempo en el aire.
-                  </p>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </main>
+
   )
 }
 
