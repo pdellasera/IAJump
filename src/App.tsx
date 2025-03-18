@@ -492,7 +492,7 @@ export default function VerticalJumpAnalyzer() {
       <div className="px-4 mb-4">
         <div className="flex bg-[#e5e5ea] rounded-xl p-1">
           <button
-            className={`flex-1 py-2 text-center text-sm font-medium rounded-lg transition-all duration-200 ${
+            className={`flex-1 p-1 text-center text-sm font-medium rounded-lg transition-all duration-200 ${
               activeTab === "video" ? "bg-white text-[#1c1c1e] shadow-sm" : "bg-transparent text-[#6e6e73]"
             }`}
             onClick={() => setActiveTab("video")}
@@ -500,7 +500,7 @@ export default function VerticalJumpAnalyzer() {
             Video
           </button>
           <button
-            className={`flex-1 py-2 text-center text-sm font-medium rounded-lg transition-all duration-200 ${
+            className={`flex-1 p-1 text-center text-sm font-medium rounded-lg transition-all duration-200 ${
               activeTab === "results" ? "bg-white text-[#1c1c1e] shadow-sm" : "bg-transparent text-[#6e6e73]"
             }`}
             onClick={() => setActiveTab("results")}
@@ -613,18 +613,18 @@ export default function VerticalJumpAnalyzer() {
                       </button>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 justify-center mb-4 px-4">
+                    <div className="flex flex-wrap gap-2 justify-center mb-4 px-4 w-full">
                       <button
-                        className={`px-4 py-2.5 rounded-full flex items-center text-sm font-medium ${
+                        className={`px-4 py-2 rounded-full flex items-center text-sm font-medium text-xs ${
                           takeoffTime !== null ? "bg-[#34c759] text-white" : "bg-[#e5e5ea] text-[#3a3a3c]"
                         }`}
                         onClick={markTakeoff}
                       >
                         <Flag className="h-4 w-4 mr-2" />
-                        Marcar Despegue
+                       Marcar Despegue
                       </button>
                       <button
-                        className={`px-4 py-2.5 rounded-full flex items-center text-sm font-medium ${
+                        className={`px-4 py-2 rounded-full flex items-center text-sm font-medium text-xs ${
                           landingTime !== null ? "bg-[#ff453a] text-white" : "bg-[#e5e5ea] text-[#3a3a3c]"
                         }`}
                         onClick={markLanding}
@@ -841,7 +841,7 @@ export default function VerticalJumpAnalyzer() {
       </div>
 
       {/* Bottom navigation bar - iOS style */}
-      <div className="flex justify-around items-center py-2 px-4 bg-white border-t border-[#e5e5ea]">
+      <div className="flex justify-around items-center py-2 px-4 bg-white border-t border-[#e5e5ea] sticky bottom-0">
         <button className="flex flex-col items-center justify-center w-16 py-1">
           <div className="w-6 h-6 mb-1 text-[#007aff]">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
