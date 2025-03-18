@@ -481,38 +481,7 @@ export default function VerticalJumpAnalyzer() {
 
   return (
     <div className="flex flex-col w-full max-w-md mx-auto bg-[#f5f5f7] min-h-screen">
-      {/* Status bar - simulating a mobile app status bar */}
-      <div className="flex justify-between items-center px-4 py-2 bg-[#f5f5f7]">
-        <div className="text-xs font-medium text-[#3a3a3c]">9:41</div>
-        <div className="flex items-center space-x-1">
-          <div className="w-4 h-4">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <div className="w-4 h-4">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M8.5 12.5L10.5 14.5L15.5 9.5"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <div className="w-6 h-3 bg-[#3a3a3c] rounded-sm relative">
-            <div className="absolute right-0 top-0 w-1 h-3 bg-[#f5f5f7] rounded-tr-sm rounded-br-sm"></div>
-          </div>
-        </div>
-      </div>
-
+ 
       {/* App header */}
       <div className="px-4 pt-2 pb-4">
         <h1 className="text-2xl font-bold text-[#1c1c1e]">Jump Analyzer</h1>
